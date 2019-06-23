@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: info-reader
+  namespace: applications
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: info-reader
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: info-reader
+  namespace: applications
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: info-reader
+  template:
+    metadata:
+      labels:
+        app: info-reader
+    spec:
+      containers:
+      - env:
+          - name: host 
+            valueFrom: 
+              configMapKeyRef: 
+                key: host
+                name: cassandra-configmap
+          - name: pass 
+            valueFrom: 
+              configMapKeyRef: 
+                key: pass
+                name: cassandra-configmap
+        name: info-reader
+        image: diana1996/info-reader:latest
+        ports:
+        - containerPort: 8080
+        
