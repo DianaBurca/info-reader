@@ -62,3 +62,8 @@ func ReadHandler(c *gin.Context) {
 	}
 
 }
+
+// Health ...
+func Health(c *gin.Context) {
+	c.Status(http.StatusOK)
+}
